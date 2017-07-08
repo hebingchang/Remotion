@@ -17,7 +17,17 @@
 var netControl = require('./netControl');
 var relayOpen = false;
 var errorMsg = "";
+var ruff_status = "";
+var status_code = 0;
 
+function setStatus(st, code) {
+	ruff_status = st;
+	status_code = code;
+}
+
+function getStatus() {
+	return [status_code, ruff_status];
+}
 
 function controlRelay(open){
     if (open) {
@@ -48,20 +58,24 @@ $.ready(function (error) {
 			{
 				case "c0_00":
 				  showText("Power ON/OFF");
+				  setStatus("success", 1);
 				  break;
 				case "c0_01":
 				  showText("Temperature +");
+				  setStatus("success", 1);
 				  break;
 				case "c0_02":
 				  showText("Temperature -");
+				  setStatus("success", 1);
 				  break;
 				default:
+				  setStatus("Command not found.", 0);
 				  break;
 			}
 
         },
         getReply: function () {
-          
+           return JSON.stringify({"success": getStatus()[0], "message": getStatus()[1]});
         }
     });
 });
