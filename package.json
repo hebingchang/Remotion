@@ -1,8 +1,8 @@
 {
-    "name": "ruff_helloworld",
+    "name": "remotion",
     "version": "0.1.0",
-    "description": "hackathon",
-    "author": "boar",
+    "description": "hack.init() project",
+    "author": "Boar",
     "main": "src/index.js",
     "ruff": {
         "boards": {
