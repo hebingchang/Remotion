@@ -16,8 +16,8 @@
 
 var netControl = require('./netControl');
 var relayOpen = false;
-var flag = true;
 var errorMsg = "";
+
 
 function controlRelay(open){
     if (open) {
@@ -25,11 +25,16 @@ function controlRelay(open){
             console.log('turn on');
         });
     } else {
-        $('#led-b').turnOff(function () { 
+        $('#led-b').turnOff(function () {
             console.log('turn off');
         });
     }
     relayOpen = open;
+}
+
+function showText(txt) {
+	$('#lcd1602').clear();
+	$('#lcd1602').print(txt);
 }
 
 $.ready(function (error) {
@@ -39,29 +44,28 @@ $.ready(function (error) {
     }
     netControl.listenCMD({
         exeCmd:function (cmd) {
-            if (cmd == 'openLED') {
-                controlRelay(true)
-                flag = true;
-            } else if (cmd == 'closeLED') {
-                controlRelay(false)
-                flag = true;
-            } else {
-                flag = false;
-                errorMsg = "Command not found.";
-            }
+            switch(cmd)
+			{
+				case "c0_00":
+				  showText("Power ON/OFF");
+				  break;
+				case "c0_01":
+				  showText("Temperature +");
+				  break;
+				case "c0_02":
+				  showText("Temperature -");
+				  break;
+				default:
+				  break;
+			}
+
         },
         getReply: function () {
-          if (flag == true) {
-            return JSON.stringify({"success": flag, "open": relayOpen});
-          } else {
-            return JSON.stringify({"success": flag, "msg": errorMsg});
-          }
+          
         }
     });
 });
 
 $.end(function () {
-    $('#led-b').turnOff(function () { 
-        console.log('turn off');
-    });
+    
 });

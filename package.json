@@ -9,6 +9,8 @@
             "ruff-mbd-v1": "^4.2.5",
             "*": "*"
         },
-        "dependencies": {}
+        "dependencies": {
+            "lcd1602-pcf8574a-hd44780": "^0.2.7"
+        }
     }
 }
