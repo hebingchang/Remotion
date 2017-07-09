@@ -6,11 +6,17 @@ function createServer(callback) {
     var queryString  = require("querystring");
     var datas={};
     var server = http.createServer(function (request, response) {
-        var query=url.parse(request.url).query;
+        var query = url.parse(request.url).query;
         datas = queryString.parse(query);
-        callback.exeCmd(datas.cmd, datas.power, datas.temperature, datas.mode);
-        response.write(callback.getReply());
-        response.end();
+//		console.log("datas: ");
+//		console.log(datas);
+		if(datas.cmd != null) {
+			callback.exeCmd(datas.cmd, datas.power, datas.temperature, datas.mode);
+//			console.log("exeCmd finished");
+			response.write(callback.getReply());
+//			console.log("getReply finished");
+			response.end();
+		}        		
     });
     server.listen(PORT);
     console.log("Server runing at port: " + PORT + ".");

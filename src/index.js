@@ -47,8 +47,14 @@ function showStatus() {
 	var power = ["Power OFF", "Power ON"];
 	var mode = ["Cold", "Heat", "Dehumidify"];
 	var sta = air.getStatus();
+//	console.log("power:" + power[sta["power"]]);
+//	console.log("sta:");
 	console.log(sta);
-	showText(power[sta["power"]], mode[sta["mode"]] + " " + air.temperature + "C");
+	if (power[sta["power"]] == "Power OFF") {
+		showText_PowerOff(power[sta["power"]]);
+	} else {
+		showText(power[sta["power"]], mode[sta["mode"]] + " " + air.temperature + "C");
+	}
 }
 
 function getStatus() {
@@ -68,6 +74,11 @@ function controlRelay(open){
     relayOpen = open;
 }
 
+function showText_PowerOff(txt1) {
+	$('#lcd1602').clear();
+	$('#lcd1602').print(txt1);
+}
+
 function showText(txt1, txt2) {
 	$('#lcd1602').clear();
 	$('#lcd1602').print(txt1);
@@ -85,8 +96,12 @@ $.ready(function (error) {
 	netControl.listenCMD({
         exeCmd:function (cmd, power, temperature, mode) {
 			if (power === "0" || power === "1") {
+//				console.log("power set to is 0 or 1");
 				air.setStatus(power, temperature, mode);
 			} else {
+//				console.log("power is Not set to 0 or 1");
+//				console.log("power is set to " + power);
+//				console.log("cmd: ");
 				console.log(cmd);
 				switch(cmd)
 				{
@@ -98,12 +113,12 @@ $.ready(function (error) {
 					  }
 					  break;
 					case "c0_01":
-					  if (parseInt(air.temperature) < 30) {
+					  if (parseInt(air.temperature) < 30 && air.power == "1") {
 						air.temperature = parseInt(air.temperature)+1;
 					  }
 					  break;
 					case "c0_02":
-					  if (parseInt(air.temperature) > 16) {
+					  if (parseInt(air.temperature) > 16 && air.power == "1") {
 					    air.temperature = parseInt(air.temperature)-1;
 					  }
 					  break;
@@ -112,7 +127,6 @@ $.ready(function (error) {
 					  break;
 				}
 			}
-			
 			showStatus();
         },
         getReply: function () {
